@@ -11,7 +11,7 @@ def load_model():
 
 model, feature_columns = load_model()
 
-st.title("📦 Last-Mile Delivery ETA Prediction Engine")
+st.title("🚚 Last-Mile Delivery ETA Prediction Engine")
 st.write("Enter the order, agent, and environmental details to predict the estimated delivery time.")
 
 # --- Input Widgets ---
@@ -60,12 +60,30 @@ if st.button("Predict Estimated Delivery Time", type="primary"):
     # Display Prediction Result
     st.success(f"Estimated Delivery Time (ETA): **{prediction:.2f} minutes**")
 
-    st.write("---")
+st.write("---")
 
-    # Display Model & Business Metrics Dashboard
-    st.subheader("📊 Model Performance & Business Impact")
-    m1, m2, m3 = st.columns(3)
+# --- Model Performance & Business Metrics Dashboard ---
+st.subheader("📊 Model Performance & Business Impact")
+m1, m2, m3 = st.columns(3)
 
-    m1.metric("Model MAE", "17.01 mins", "Error tolerance")
-    m2.metric("R² Score", "0.8222", "Variance explained")
-    m3.metric("SLA Breach Rate", "10.52%", "-4.48% vs Target (<15%)")
+m1.metric("Model MAE", "17.01 mins", "Error tolerance")
+m2.metric("R² Score", "0.8222", "Variance explained")
+m3.metric("SLA Breach Rate", "10.52%", "-4.48% vs Target (<15%)")
+
+# --- Full Model Performance Comparison Table ---
+st.write("---")
+st.subheader("🔬 All Models Accuracy Comparison")
+st.write("Comparing LightGBM against baseline and traditional regression models:")
+
+comparison_data = {
+    "Model": ["LightGBM", "Random Forest", "Linear Regression", "SVR"],
+    "MAE (Minutes)": [17.01, 17.41, 26.10, 39.71],
+    "RMSE (Minutes)": [21.76, 22.76, 33.15, 49.91],
+    "R² Score": [0.8222, 0.8055, 0.5876, 0.0649]
+}
+
+comparison_df = pd.DataFrame(comparison_data)
+
+st.dataframe(comparison_df.style.highlight_min(subset=["MAE (Minutes)", "RMSE (Minutes)"], color="lightgreen")
+                                  .highlight_max(subset=["R² Score"], color="lightgreen"), 
+             use_container_width=True)
